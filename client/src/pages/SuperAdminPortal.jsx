@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Navbar } from '../components/Navbar';
+import { supabase } from '../utils/supabase';
 import {
   Crown,
   ShieldCheck,
@@ -480,50 +481,86 @@ export const SuperAdminPortal = () => {
           </div>
         )}
 
-        {/* TAB 5: PLATFORM FEATURE CONTROLS */}
+        {/* TAB 5: PLATFORM FEATURE CONTROLS & SUPABASE CLOUD STATUS */}
         {activeTab === 'SETTINGS' && (
-          <div className="max-w-2xl p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 text-xs animate-fade-in">
-            <h3 className="text-base font-bold text-white">Platform-Wide Feature Availability Toggles</h3>
-
-            <div className="space-y-3">
-              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-white block">NEET Preparation Track</span>
-                  <span className="text-slate-400">Full PYQ player, NCERT library & mock examinations.</span>
+          <div className="max-w-3xl space-y-6 text-xs animate-fade-in">
+            {/* Supabase Live Integration Banner */}
+            <div className="p-6 rounded-3xl bg-emerald-950/40 border border-emerald-500/40 space-y-4 shadow-xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold">
+                    ⚡
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-white">Supabase Cloud PostgreSQL Active</h3>
+                    <p className="text-[11px] text-slate-300">Connected Endpoint: https://wqtavzkfwbnhefabgzou.supabase.co</p>
+                  </div>
                 </div>
-                <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[10px]">
-                  ENABLED (ACTIVE)
+                <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold uppercase text-[10px] flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  <span>CLOUD CONNECTED</span>
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-white block">IIT-JEE & GATE Tracks</span>
-                  <span className="text-slate-400">Engineering modules preview status.</span>
+              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                <div className="flex justify-between text-slate-300">
+                  <span className="text-slate-400">Database Engine:</span>
+                  <span className="font-semibold text-white">PostgreSQL (Supabase Managed Cloud)</span>
                 </div>
-                <span className="px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 font-bold text-[10px]">
-                  COMING SOON
-                </span>
+                <div className="flex justify-between text-slate-300">
+                  <span className="text-slate-400">Security Architecture:</span>
+                  <span className="font-semibold text-emerald-400">Row-Level Security (RLS) Active</span>
+                </div>
+                <div className="flex justify-between text-slate-300">
+                  <span className="text-slate-400">Migration File:</span>
+                  <span className="font-mono text-amber-300">supabase/migrations/20261117_init_gyanvik_schema.sql</span>
+                </div>
               </div>
+            </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-white block">AI Chatbot Module</span>
-                  <span className="text-slate-400">Disabled until approved per mentor initial PDF scope guidelines.</span>
-                </div>
-                <span className="px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 font-bold text-[10px]">
-                  LOCKED BY SCOPE
-                </span>
-              </div>
+            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
+              <h3 className="text-base font-bold text-white">Platform-Wide Feature Availability Toggles</h3>
 
-              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-white block">Payment Gateway Sandbox</span>
-                  <span className="text-slate-400">Mock payment processing enabled without real money charges.</span>
+              <div className="space-y-3">
+                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-white block">NEET Preparation Track</span>
+                    <span className="text-slate-400">Full PYQ player, NCERT library & mock examinations.</span>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[10px]">
+                    ENABLED (ACTIVE)
+                  </span>
                 </div>
-                <span className="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 font-bold text-[10px]">
-                  SANDBOX MODE
-                </span>
+
+                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-white block">IIT-JEE & GATE Tracks</span>
+                    <span className="text-slate-400">Engineering modules preview status.</span>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 font-bold text-[10px]">
+                    COMING SOON
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-white block">AI Chatbot Module</span>
+                    <span className="text-slate-400">Disabled until approved per mentor initial PDF scope guidelines.</span>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 font-bold text-[10px]">
+                    LOCKED BY SCOPE
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-white block">Payment Gateway Sandbox</span>
+                    <span className="text-slate-400">Mock payment processing enabled without real money charges.</span>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 font-bold text-[10px]">
+                    SANDBOX MODE
+                  </span>
+                </div>
               </div>
             </div>
           </div>

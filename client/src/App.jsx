@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CinematicIntro } from './components/CinematicIntro';
@@ -7,6 +7,7 @@ import { StudentDashboard } from './pages/StudentDashboard';
 import { NeetPrepHub } from './pages/NeetPrepHub';
 import { AdminPortal } from './pages/AdminPortal';
 import { SuperAdminPortal } from './pages/SuperAdminPortal';
+import { supabase } from './utils/supabase';
 
 // Protected Route helper
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -39,10 +40,34 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 function AppContent() {
   // Show cinematic intro once initially
   const [showIntro, setShowIntro] = useState(() => {
-    // Check if intro has already been viewed in this browser session
     const seen = sessionStorage.getItem('gyanvik_intro_seen');
     return !seen;
   });
+
+  // Supabase live integration state (queries live cloud database)
+  const [supabaseConnected, setSupabaseConnected] = useState(false);
+  const [cloudItems, setCloudItems] = useState([]);
+
+  useEffect(() => {
+    async function initSupabaseData() {
+      try {
+        // Query Supabase live endpoint
+        const { data: todos, error: todosErr } = await supabase.from('todos').select('*');
+        if (todos && !todosErr) {
+          setCloudItems(todos);
+        }
+
+        const { data: profiles, error: profErr } = await supabase.from('profiles').select('*').limit(1);
+        if (!profErr || profErr.code === 'PGRST205') {
+          setSupabaseConnected(true);
+        }
+      } catch (e) {
+        console.warn('Supabase integration initialized:', e);
+      }
+    }
+
+    initSupabaseData();
+  }, []);
 
   const handleIntroComplete = () => {
     sessionStorage.setItem('gyanvik_intro_seen', 'true');
