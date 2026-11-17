@@ -1,0 +1,14 @@
+{
+  "name": "gyanvik-monorepo",
+  "version": "1.0.0",
+  "description": "GYANVIK - One Platform. Many Examinations. Clearer Opportunities.",
+  "scripts": {
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "build:client": "cd client && npm run build",
+    "start": "cd server && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
